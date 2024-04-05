@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
   end
 
   def create
-    @user = User.where("login = ? AND password = '#{auth_params[:password]}'", auth_params[:login]).first
+    @user = User.where("login = ? AND password = ?", auth_params[:login], auth_params[:password]).first    
     if @user
       @current_user = @user
       session[:user_id] = @user.id
