@@ -9,6 +9,21 @@ class SessionsController < ApplicationController
   end
 
   def create
+    @user = User.where("login = ? AND password = '#{auth_params[:password]}'", auth_params[:login]).first
+    if @user
+      @current_user = @user
+      session[:user_id] = @user.id
+      redirect_to root_url
+      return true
+    elsif User.find_by(login: auth_params[:login])
+      flash.now[:alert] = "Incorrect password!"
+    else
+      flash.now[:alert] = "User not found!"
+    end
+    render :new
+  end
+
+    def createSecure
     #@user = User.where("login = ? AND password = '#{auth_params[:password]}'", auth_params[:login]).first
     @user = User.where("login = ? AND password = ?", auth_params[:login], auth_params[:password]).first
     if @user
